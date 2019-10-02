@@ -258,10 +258,14 @@ public:
     void setStep(float step);
     void setColor(const QColor& color);
     void setSubDegree(bool );
+    void setLength(float length); //length is a percentage of distance from the outer radius of the degrees to the center
+    void setWidth(float width); //takes width as percentage of radius
 private:
     float mStep;
     QColor mColor;
     bool mSubDegree;
+    float mLength; //length is a percentage of distance from the outer radius of the degrees to the center
+    float mWidth; //width of each individual degree (given as a percentage of the circle radius)
 };
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////

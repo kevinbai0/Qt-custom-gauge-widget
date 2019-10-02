@@ -551,6 +551,8 @@ QcDegreesItem::QcDegreesItem(QObject *parent) :
 {
     mStep = 10;
     mColor = Qt::black;
+    mLength = 0.1;
+    mWidth = 0.04;
     mSubDegree = false;
     setPosition(90);
 }
@@ -569,13 +571,13 @@ void QcDegreesItem::draw(QPainter *painter)
         QPainterPath path;
         path.moveTo(pt);
         path.lineTo(tmpRect.center());
-        pt = path.pointAtPercent(0.03);
-        QPointF newPt = path.pointAtPercent(0.13);
+        pt = path.pointAtPercent(0);
+        QPointF newPt = path.pointAtPercent(mLength);
 
         QPen pen;
         pen.setColor(mColor);
         if(!mSubDegree)
-            pen.setWidthF(r/25.0);
+            pen.setWidthF(r * mWidth);
 
         painter->setPen(pen);
         painter->drawLine(pt,newPt);
@@ -598,6 +600,24 @@ void QcDegreesItem::setColor(const QColor& color)
 void QcDegreesItem::setSubDegree(bool b)
 {
     mSubDegree = b;
+    update();
+}
+
+void QcDegreesItem::setLength(float length){
+    mLength = length;
+    update();
+}
+
+void QcDegreesItem::setWidth(float width){
+    if(mWidth > 1){
+        mWidth = 0.04;
+    }
+    else if(mWidth < 0){
+        mWidth = 0.04;
+    }
+    else{
+        mWidth = width;
+    }
     update();
 }
 
