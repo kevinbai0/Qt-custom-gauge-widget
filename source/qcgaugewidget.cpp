@@ -555,6 +555,7 @@ QcDegreesItem::QcDegreesItem(QObject *parent) :
     mWidth = 0.04;
     mSubDegree = false;
     setPosition(90);
+
 }
 
 
