@@ -198,9 +198,13 @@ public:
     QString text();
     void setColor(const QColor& color);
     QColor color();
+    void setFont(QString str);
+    void setFontSize(float size);
 
 private:
     float mAngle;
+    float mFontSize;//based on a percentage of the radius
+    QString mFont;
     QString mText;
     QColor mColor;
 };
@@ -237,12 +241,17 @@ public:
     explicit QcColorBand(QObject *parent = 0);
     void draw(QPainter*);
     void setColors(const QList<QPair<QColor,float> >& colors);
+    void setWidth(float width);
+    void setDynamic(bool b);
+    void setCurrentValue(float value);
 
 private:
    QPainterPath createSubBand(float from,float sweep);
-
    QList<QPair<QColor,float> > mBandColors;
    float mBandStartValue;
+   float mBandWidth;
+   //bool mdynamic;
+   //float mCurrentValue;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////

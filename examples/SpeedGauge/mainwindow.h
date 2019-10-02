@@ -32,7 +32,6 @@
 #include <QMainWindow>
 #include "../../source/qcgaugewidget.h"
 
-
 namespace Ui {
 class MainWindow;
 }

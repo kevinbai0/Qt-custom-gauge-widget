@@ -395,6 +395,8 @@ QcLabelItem::QcLabelItem(QObject *parent) :
     mAngle = 270;
     mText = "%";
     mColor = Qt::black;
+    mFont = "Meiryo UI";
+    mFontSize = 0.1;
 }
 
 void QcLabelItem::draw(QPainter *painter)
@@ -402,7 +404,7 @@ void QcLabelItem::draw(QPainter *painter)
     resetRect();
     QRectF tmpRect = adjustRect(position());
     float r = getRadius(rect());
-    QFont font("Meiryo UI", r/10.0, QFont::Bold);
+    QFont font(mFont, r * mFontSize, QFont::Bold);
     painter->setFont(font);
     painter->setPen(QPen(mColor));
 
@@ -449,6 +451,17 @@ QColor QcLabelItem::color()
 {
     return mColor;
 }
+
+void QcLabelItem::setFont(QString str){
+    mFont = str;
+    update();
+}
+
+void QcLabelItem::setFontSize(float size){
+    mFontSize = size;
+    update();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -501,6 +514,10 @@ QcColorBand::QcColorBand(QObject *parent) :
     pair.second = 100;
     mBandColors.append(pair);
 
+    mBandWidth = 0.04;
+    //mdynamic = false;
+    //mCurrentValue = mBandStartValue;
+
     setPosition(50);
 }
 
@@ -519,7 +536,7 @@ void QcColorBand::draw(QPainter *painter)
     float r = getRadius(rect());
     QPen pen;
     pen.setCapStyle(Qt::FlatCap);
-    pen.setWidthF(r/20.0);
+    pen.setWidthF(r * mBandWidth);
     painter->setBrush(Qt::NoBrush);
     float offset = getDegFromValue(mBandStartValue);
     for(int i = 0;i<mBandColors.size();i++){
@@ -529,6 +546,8 @@ void QcColorBand::draw(QPainter *painter)
             sweep = getDegFromValue(mBandColors[i].second)-getDegFromValue(mMinValue);
         else
             sweep = getDegFromValue(mBandColors[i].second)-getDegFromValue(mBandColors[i-1].second);
+
+
         QPainterPath path = createSubBand(-offset,sweep);
         offset += sweep;
         pen.setColor(clr);
@@ -539,6 +558,11 @@ void QcColorBand::draw(QPainter *painter)
 void QcColorBand::setColors(const QList<QPair<QColor, float> > &colors)
 {
     mBandColors = colors;
+    update();
+}
+
+void QcColorBand::setWidth(float width){
+    mBandWidth = width;
     update();
 }
 

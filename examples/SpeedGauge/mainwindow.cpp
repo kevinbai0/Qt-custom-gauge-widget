@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mSpeedGauge = new QcGaugeWidget;
     mSpeedGauge->addBackground(99);
-    QcBackgroundItem *bkg1 = mSpeedGauge->addBackground(92);
+   QcBackgroundItem *bkg1 = mSpeedGauge->addBackground(92);
     bkg1->clearrColors();
     bkg1->addColor(0.1,Qt::black);
     bkg1->addColor(1.0,Qt::white);
@@ -52,14 +52,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QcDegreesItem * deg = mSpeedGauge->addDegrees(62);
     deg->setStep(1);
     deg->setWidth(0.01);
+    deg->setLength(0.05);
     deg->setColor(Qt::blue);
-    mSpeedGauge->addColorBand(50);
+
+    QcColorBand * cb = mSpeedGauge->addColorBand(50);
+    cb->setWidth(0.1);
+
 
     mSpeedGauge->addValues(80)->setValueRange(0,80);
 
     mSpeedGauge->addLabel(70)->setText("Km/h");
     QcLabelItem *lab = mSpeedGauge->addLabel(40);
     lab->setText("0");
+    lab->setFont("Impact");
+    lab->setFontSize(0.15);
     mSpeedNeedle = mSpeedGauge->addNeedle(60);
     mSpeedNeedle->setLabel(lab);
     mSpeedNeedle->setColor(Qt::white);
