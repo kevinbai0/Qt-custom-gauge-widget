@@ -35,8 +35,6 @@
 #include <QRectF>
 #include <QtMath>
 
-
-
 #if defined(QCGAUGE_COMPILE_LIBRARY)
 #  define QCGAUGE_DECL  Q_DECL_EXPORT
 #elif defined(QCGAUGE_USE_LIBRARY)
@@ -200,9 +198,13 @@ public:
     QString text();
     void setColor(const QColor& color);
     QColor color();
+    void setFont(QString str);
+    void setFontSize(float size);
 
 private:
     float mAngle;
+    float mFontSize;//based on a percentage of the radius
+    QString mFont;
     QString mText;
     QColor mColor;
 };
@@ -239,12 +241,17 @@ public:
     explicit QcColorBand(QObject *parent = 0);
     void draw(QPainter*);
     void setColors(const QList<QPair<QColor,float> >& colors);
+    void setWidth(float width);
+    void setDynamic(bool b);
+    void setCurrentValue(float value);
 
 private:
    QPainterPath createSubBand(float from,float sweep);
-
    QList<QPair<QColor,float> > mBandColors;
    float mBandStartValue;
+   float mBandWidth;
+   //bool mdynamic;
+   //float mCurrentValue;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -258,10 +265,14 @@ public:
     void setStep(float step);
     void setColor(const QColor& color);
     void setSubDegree(bool );
+    void setLength(float length); //length is a percentage of distance from the outer radius of the degrees to the center
+    void setWidth(float width); //takes width as percentage of radius
 private:
     float mStep;
     QColor mColor;
     bool mSubDegree;
+    float mLength; //length is a percentage of distance from the outer radius of the degrees to the center
+    float mWidth; //width of each individual degree (given as a percentage of the circle radius)
 };
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
