@@ -35,8 +35,6 @@
 #include <QRectF>
 #include <QtMath>
 
-
-
 #if defined(QCGAUGE_COMPILE_LIBRARY)
 #  define QCGAUGE_DECL  Q_DECL_EXPORT
 #elif defined(QCGAUGE_USE_LIBRARY)
