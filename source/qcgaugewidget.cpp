@@ -26,8 +26,6 @@
 **           Version:  1.0                                                **
 ****************************************************************************/
 
-
-
 #include "qcgaugewidget.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -515,8 +513,10 @@ QcColorBand::QcColorBand(QObject *parent) :
     mBandColors.append(pair);
 
     mBandWidth = 0.04;
-    //mdynamic = false;
-    //mCurrentValue = mBandStartValue;
+    mdynamic = false;
+    mCurrentValue = 0;
+    mCoveringColor = Qt::darkGray;
+    mOpacity = 0.9;
 
     setPosition(50);
 }
@@ -564,6 +564,74 @@ void QcColorBand::setColors(const QList<QPair<QColor, float> > &colors)
 void QcColorBand::setWidth(float width){
     mBandWidth = width;
     update();
+}
+
+void QcColorBand::setDynamic(bool b){
+    mdynamic = b;
+    if (b){
+
+        mBandColors.clear();
+        QPair<QColor,float> pair;
+        pair.first = Qt::transparent;
+        if (mCurrentValue < 100){
+            pair.second = mCurrentValue; //value from 0 to 100 (percentage based)
+        }
+        else{
+            pair.second = 100;
+        }
+        mBandColors.append(pair);
+        QColor tmpColor = mCoveringColor;
+        tmpColor.setAlphaF(mOpacity);
+        pair.first = tmpColor;
+        pair.second = 100;
+        mBandColors.append(pair);
+
+    }
+    else{
+        QColor tmpColor;
+        tmpColor.setAlphaF(0.1);
+        QPair<QColor,float> pair;
+
+        pair.first = Qt::green;
+        pair.second = 10;
+        mBandColors.append(pair);
+
+        pair.first = Qt::darkGreen;
+        pair.second = 50;
+        mBandColors.append(pair);
+
+        pair.first = Qt::red;
+        pair.second = 100;
+        mBandColors.append(pair);
+
+        mBandWidth = 0.04;
+        mdynamic = false;
+        mCurrentValue = 0;
+
+    }
+    update();
+}
+
+void QcColorBand::setCurrentValue(float value){
+    mCurrentValue = value;
+    setDynamic(true);
+}
+
+void QcColorBand::setCoveringColor(QColor c){
+    mCoveringColor = c;
+    setDynamic(true);
+}
+void QcColorBand::setOpacity(float value){
+    if (value > 1){
+        mOpacity = 1;
+    }
+    else if (value < 0){
+        mOpacity = 0;
+    }
+    else{
+        mOpacity = value;
+    }
+    setDynamic(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

@@ -79,7 +79,6 @@ public:
     QList <QcItem*> items();
     QList <QcItem*> mItems;
 
-
 signals:
 
 public slots:
@@ -244,14 +243,18 @@ public:
     void setWidth(float width);
     void setDynamic(bool b);
     void setCurrentValue(float value);
+    void setOpacity(float value); //from 0 to 1
+    void setCoveringColor(QColor c);
 
 private:
    QPainterPath createSubBand(float from,float sweep);
    QList<QPair<QColor,float> > mBandColors;
    float mBandStartValue;
-   float mBandWidth;
-   //bool mdynamic;
-   //float mCurrentValue;
+   float mBandWidth; //percentage of the radius
+   float mOpacity; //only for when dynamic, sets opacity of covering color
+   QColor mCoveringColor; //sets the color which will cover the other color band
+   bool mdynamic;
+   float mCurrentValue; //percentage (from 0 to 100) of the gauge
 };
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
