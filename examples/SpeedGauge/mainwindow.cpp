@@ -48,7 +48,11 @@ MainWindow::MainWindow(QWidget *parent) :
     bkg2->addColor(1.0,Qt::darkGray);
 
     mSpeedGauge->addArc(55);
-    mSpeedGauge->addDegrees(65)->setValueRange(0,80);
+    mSpeedGauge->addDegrees(62)->setValueRange(0,80);
+    QcDegreesItem * deg = mSpeedGauge->addDegrees(62);
+    deg->setStep(1);
+    deg->setWidth(0.01);
+    deg->setColor(Qt::blue);
     mSpeedGauge->addColorBand(50);
 
     mSpeedGauge->addValues(80)->setValueRange(0,80);
