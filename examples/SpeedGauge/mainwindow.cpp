@@ -55,9 +55,17 @@ MainWindow::MainWindow(QWidget *parent) :
     deg->setLength(0.05);
     deg->setColor(Qt::blue);
 
-    QcColorBand * cb = mSpeedGauge->addColorBand(50);
-    cb->setWidth(0.1);
 
+
+
+    QcColorBand * cb = mSpeedGauge->addColorBand(50);
+    cb->setWidth(0.04);
+
+    mDynamicColorBand = mSpeedGauge->addColorBand(50);
+    mDynamicColorBand->setWidth(0.04);
+    mDynamicColorBand->setDynamic(true);
+    mDynamicColorBand->setCoveringColor(Qt::cyan);
+    mDynamicColorBand->setOpacity(0.6);
 
     mSpeedGauge->addValues(80)->setValueRange(0,80);
 
@@ -85,4 +93,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     mSpeedNeedle->setCurrentValue(value);
+    mDynamicColorBand->setCurrentValue((int) ((float) value / 80 *100));
+
 }
