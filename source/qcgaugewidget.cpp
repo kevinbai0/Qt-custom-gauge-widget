@@ -895,6 +895,8 @@ QcValuesItem::QcValuesItem(QObject *parent) :
     setPosition(70);
     mColor = Qt::black;
     mStep = 10;
+    mfont = "Meiryo UI";
+    mFontSize = 0.08;
 }
 
 
@@ -902,8 +904,8 @@ void QcValuesItem::draw(QPainter*painter)
 {
     QRectF  tmpRect = resetRect();
     float r = getRadius(adjustRect(99));
-    QFont font("Meiryo UI",0, QFont::Bold);
-    font.setPointSizeF(0.08*r);
+    QFont font(mfont,0, QFont::Bold);
+    font.setPointSizeF(mFontSize*r);
 
     painter->setFont(font);
     painter->setPen(mColor);
@@ -933,6 +935,22 @@ void QcValuesItem::setStep(float step)
 void QcValuesItem::setColor(const QColor& color)
 {
     mColor = color;
+}
+
+void QcValuesItem::setFont(QString font){
+    mfont = font;
+}
+void QcValuesItem::setFontSize(float value){
+    if (value > 1){
+        mFontSize = 1;
+    }
+    else if (value < 0){
+        mFontSize = 0;
+    }
+    else {
+        mFontSize = value;
+    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

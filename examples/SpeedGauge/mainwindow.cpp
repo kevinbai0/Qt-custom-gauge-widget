@@ -67,7 +67,11 @@ MainWindow::MainWindow(QWidget *parent) :
     mDynamicColorBand->setCoveringColor(Qt::cyan);
     mDynamicColorBand->setOpacity(0.6);
 
-    mSpeedGauge->addValues(80)->setValueRange(0,80);
+
+    QcValuesItem *v = mSpeedGauge->addValues(75);
+    v->setValueRange(0,80);
+    v->setFont("Impact");
+    v->setFontSize(0.09);
 
     mSpeedGauge->addLabel(70)->setText("Km/h");
     QcLabelItem *lab = mSpeedGauge->addLabel(40);

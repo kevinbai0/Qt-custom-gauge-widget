@@ -326,7 +326,11 @@ public:
     void draw(QPainter*);
     void setStep(float step);
     void setColor(const QColor& color);
+    void setFont(QString font);
+    void setFontSize(float value);
 private:
+    QString mfont;
+    float mFontSize; //given as a value from 0 to 1 which represents percentage of radius
     float mStep;
     QColor mColor;
 };
