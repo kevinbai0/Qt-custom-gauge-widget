@@ -52,6 +52,7 @@ private:
 
     QcGaugeWidget * mSpeedGauge;
     QcNeedleItem *mSpeedNeedle;
+    QcColorBand * mDynamicColorBand;
 };
 
 #endif // MAINWINDOW_H
