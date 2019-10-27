@@ -35,53 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /*mSpeedGauge = new QcGaugeWidget;
-    mSpeedGauge->addBackground(99);
-    QcBackgroundItem *bkg1 = mSpeedGauge->addBackground(92);
-    bkg1->clearrColors();
-    bkg1->addColor(0.1f,Qt::black);
-    bkg1->addColor(1.0,Qt::white);
-
-    QcBackgroundItem *bkg2 = mSpeedGauge->addBackground(88);
-    bkg2->clearrColors();
-    bkg2->addColor(0.1f,Qt::gray);
-    bkg2->addColor(1.0,Qt::darkGray);
-
-    mSpeedGauge->addArc(55);
-    mSpeedGauge->addDegrees(62)->setValueRange(0,80);
-    QcDegreesItem * deg = mSpeedGauge->addDegrees(62);
-    deg->setStep(1);
-    deg->setWidth(0.01f);
-    deg->setLength(0.05f);
-    deg->setColor(Qt::blue);
-
-    QcColorBand * cb = mSpeedGauge->addColorBand(50);
-    cb->setWidth(0.04f);
-
-    mDynamicColorBand = mSpeedGauge->addColorBand(50);
-    mDynamicColorBand->setWidth(0.04f);
-    mDynamicColorBand->setDynamic(true);
-    mDynamicColorBand->setCoveringColor(Qt::cyan);
-    mDynamicColorBand->setOpacity(0.6f);
-
-
-    QcValuesItem *v = mSpeedGauge->addValues(75);
-    v->setValueRange(0,80);
-    v->setFont("Impact");
-    v->setFontSize(0.09f);
-
-    mSpeedGauge->addLabel(70)->setText("Km/h");
-    QcLabelItem *lab = mSpeedGauge->addLabel(40);
-    lab->setText("0");
-    lab->setFont("Impact");
-    lab->setFontSize(0.15f);
-    mSpeedNeedle = mSpeedGauge->addNeedle(60);
-    mSpeedNeedle->setLabel(lab);
-    mSpeedNeedle->setColor(Qt::white);
-    mSpeedNeedle->setValueRange(0,80);
-    mSpeedGauge->addBackground(7);
-    mSpeedGauge->addGlass(88);*/
-
     customSpeedGauge = new SpeedGauge(this);
     customSpeedGauge->setMaxValue(300, 50);
 

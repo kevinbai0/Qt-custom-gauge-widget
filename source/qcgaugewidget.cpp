@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include "qcgaugewidget.h"
+#include <QDebug>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +69,13 @@ QcValuesItem *QcGaugeWidget::addValues(qreal position)
 QcArcItem *QcGaugeWidget::addArc(qreal position)
 {
     QcArcItem * item = new QcArcItem(this);
+    item->setPosition(position);
+    mItems.append(item);
+    return item;
+}
+
+QcDynamicArcItem *QcGaugeWidget::addDynamicArc(qreal position) {
+    QcDynamicArcItem *item = new QcDynamicArcItem(this);
     item->setPosition(position);
     mItems.append(item);
     return item;
@@ -241,8 +249,8 @@ qreal QcItem::getAngle(const QPointF&pt, const QRectF &tmpRect)
 QcScaleItem::QcScaleItem(QObject *parent) :
     QcItem(parent)
 {
-    mMinDegree = -45;
-    mMaxDegree = 225;
+    mMinDegree = -90;
+    mMaxDegree = 180;
     mMinValue = 0;
     mMaxValue = 100;
 }
@@ -469,11 +477,9 @@ void QcArcItem::draw(QPainter *painter)
 {
     resetRect();
     QRectF tmpRect= adjustRect(position());
-    qreal r = getRadius(tmpRect);
 
     QPen pen;
     pen.setColor(mColor);
-    pen.setWidthF(r/40);
     painter->setPen(pen);
     painter->drawArc(tmpRect, static_cast<int>(-16 * (mMinDegree+180)), static_cast<int>(-16 * (mMaxDegree-mMinDegree)));
 }
@@ -482,6 +488,96 @@ void QcArcItem::setColor(const QColor &color)
 {
     mColor = color;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+
+QcDynamicArcItem::QcDynamicArcItem(QObject *parent) : QcScaleItem(parent)
+{
+    setPosition(80);
+    mColor = Qt::black;
+    mWidth = 1;
+    mPercentage = 0;
+}
+
+void QcDynamicArcItem::draw(QPainter *painter) {
+    resetRect();
+    QRectF tmpRect= adjustRect(position());
+    QPen pen;
+    qreal r = getRadius(tmpRect);
+
+    qreal percentage = mPercentage < 0 ? 0 : mPercentage > 1 ? 1 : mPercentage;
+
+    pen.setColor(calculateColor(percentage));
+    pen.setWidthF(r * mWidth);
+    painter->setPen(pen);
+    painter->drawArc(tmpRect, static_cast<int>(-16 * (mMinDegree + 180)), static_cast<int>(-16 * (mMaxDegree - mMinDegree) * (percentage)));
+}
+
+void QcDynamicArcItem::setPercentage(const qreal &percent) {
+    this->mPercentage = percent;
+    update();
+}
+
+void QcDynamicArcItem::setColor(const QColor &color) {
+    this->mColor = color;
+    this->usingSingleColor = true;
+    update();
+}
+
+void QcDynamicArcItem::setColor(std::vector<std::pair<qreal, QColor> > colors) {
+    this->mColors = colors;
+
+    std::sort(mColors.begin(), mColors.end(), [](std::pair<qreal, QColor> a, std::pair<qreal, QColor> b) {
+        return a.first < b.first;
+    });
+
+    this->usingSingleColor = false;
+    update();
+}
+
+void QcDynamicArcItem::setWidth(const qreal &width) {
+    this->mWidth = width;
+    update();
+}
+
+QColor QcDynamicArcItem::calculateColor(qreal percentage) {
+    int size = static_cast<int>(mColors.size());
+    if (usingSingleColor || mColors.size() == 0) return mColor;
+
+    int foundIndex = -1;
+    // find the index
+    for (int i = size - 1; i >= 0; i--) {
+        if (mColors[static_cast<ulong>(i)].first < percentage) {
+            foundIndex = i;
+            break;
+        }
+    }
+
+    if (foundIndex == size - 1) return mColors[static_cast<ulong>(size - 1)].second;
+    if (foundIndex == -1) return mColors[0].second;
+    if (foundIndex == 0 && size == 1) return mColors[0].second;
+    // interpolate
+    auto lower = mColors[static_cast<ulong>(foundIndex)];
+    auto upper = mColors[static_cast<ulong>(foundIndex + 1)];
+
+    int a1, b1, c1, a2, b2, c2;
+    lower.second.getHsv(&a1, &b1, &c1);
+    upper.second.getHsv(&a2, &b2, &c2);
+
+    auto relativePercentage = (percentage - lower.first) / (upper.first - lower.first);
+
+    int a3 = a1 + static_cast<int>(relativePercentage * static_cast<double>(a2 - a1));
+    int b3 = b1 + static_cast<int>(relativePercentage * static_cast<double>(b2 - b1));
+    int c3 = c1 + static_cast<int>(relativePercentage * static_cast<double>(c2 - c1));
+
+    QColor final;
+    final.setHsv(a3,b3,c3);
+    return final;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////

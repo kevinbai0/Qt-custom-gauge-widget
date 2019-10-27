@@ -15,13 +15,22 @@ SpeedGauge::SpeedGauge(QObject *parent)
     degreeTicks->setColor(QColor(210, 210, 210));
     degreeTicks->setValueRange(0, 300);
 
-    this->degreesLabels = this->addValues(70);
-    this->degreesLabels->setValueRange(0,maxSpeed);
-    this->degreesLabels->setFont(QFont("Nunito Sans", 12, QFont::Light));
+    positionIndicator = this->addDynamicArc(88);
+    positionIndicator->setColor(QColor(59, 255, 180));
+    auto colors = {std::pair<qreal, QColor>(0.0, QColor(59, 255, 180)),
+                   std::pair<qreal, QColor>(0.233, QColor(59, 255, 180)),
+                   std::pair<qreal, QColor>(0.433, QColor(139, 239, 52)),
+                   std::pair<qreal, QColor>(0.566, QColor(139, 239, 52)),
+                   std::pair<qreal, QColor>(0.766, QColor(247, 247, 89)),
+                   std::pair<qreal, QColor>(0.800, QColor(247, 247, 89)),
+                   std::pair<qreal, QColor>(0.900, QColor(250, 77, 77)),
+                  };
+    positionIndicator->setColor(colors);
+    positionIndicator->setWidth(0.1);
 
-    this->speedNeedle = this->addNeedle(60);
-    this->speedNeedle->setColor(QColor(38, 38, 38));
-    this->speedNeedle->setValueRange(0,maxSpeed);
+    this->degreesLabels = this->addValues(70);
+    this->degreesLabels->setValueRange(0, maxValue);
+    this->degreesLabels->setFont(QFont("Avenir Next", 14, QFont::Light));
 
     auto * temp = this->addBackground(35);
     temp->clearrColors();
@@ -29,14 +38,12 @@ SpeedGauge::SpeedGauge(QObject *parent)
 
     this->unitsLabel = this->addLabel(20);
     this->unitsLabel->setText("km/h");
-    this->unitsLabel->setFont(QFont("Nunito Sans", 16, QFont::Bold));
+    this->unitsLabel->setFont(QFont("Avenir Next", 16, QFont::Bold));
     this->unitsLabel->setColor(QColor(190, 190, 190));
 
-    QcLabelItem *lab = this->addLabel(0);
-    lab->setText("0");
-    lab->setFont(QFont("Nunito Sans", 18, QFont::Bold));
-
-    this->speedNeedle->setLabel(lab);
+    this->valueLabel = this->addLabel(0);
+    valueLabel->setText("0");
+    valueLabel->setFont(QFont("Avenir Next", 24, QFont::Bold));
 
     // drop shadow
     this->dropShadow = new QGraphicsDropShadowEffect(parent);
@@ -44,22 +51,25 @@ SpeedGauge::SpeedGauge(QObject *parent)
     this->setGraphicsEffect(dropShadow);
 }
 
+void SpeedGauge::setLabel(QString text) {
+    this->unitsLabel->setText(text);
+    update();
+}
+
 void SpeedGauge::setMaxValue(qreal speed, qreal step) {
     if (speed > 0) {
-        qreal convertedSpeed = speed + floor(speed / 100);
-        this->maxSpeed = convertedSpeed;
-        this->speedNeedle->setValueRange(0, convertedSpeed);
+        qreal convertedSpeed = speed;
+        this->maxValue = convertedSpeed;
         this->degreesLabels->setValueRange(0, convertedSpeed);
         this->degreesLabels->setStep(step);
         this->degreeTicks->setStep(step / 5);
     }
 }
 
-void SpeedGauge::setMaxValue(qreal speed) {
-    if (speed > 0) {
-        qreal convertedSpeed = speed + floor(speed / 100);
-        this->maxSpeed = speed;
-        this->speedNeedle->setValueRange(0, convertedSpeed);
+void SpeedGauge::setMaxValue(qreal value) {
+    if (value > 0) {
+        qreal convertedSpeed = value;
+        this->maxValue = value;
         this->degreesLabels->setValueRange(0, convertedSpeed);
 
         qreal convertedSteps = round(convertedSpeed / 100) * 10;
@@ -68,8 +78,10 @@ void SpeedGauge::setMaxValue(qreal speed) {
     }
 }
 
-void SpeedGauge::setValue(qreal speed) {
-    speedNeedle->setCurrentValue(ceil(speed / 100.0 * maxSpeed));
+void SpeedGauge::setValue(qreal value) {
+    //speedNeedle->setCurrentValue(ceil(speed / 100.0 * maxSpeed));
+    valueLabel->setText(QString::number(ceil(value / 99.0 * maxValue)));
+    positionIndicator->setPercentage(value / 99.0);
 }
 
 void SpeedGauge::setDropShadow(qreal blurRadius, QColor color, QPointF offset) {

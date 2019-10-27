@@ -49,6 +49,7 @@ class QcBackgroundItem;
 class QcDegreesItem;
 class QcValuesItem;
 class QcArcItem;
+class QcDynamicArcItem;
 class QcColorBand;
 class QcNeedleItem;
 class QcLabelItem;
@@ -67,12 +68,12 @@ public:
     QcDegreesItem* addDegrees(qreal position);
     QcValuesItem* addValues(qreal position);
     QcArcItem* addArc(qreal position);
+    QcDynamicArcItem* addDynamicArc(qreal position);
     QcColorBand* addColorBand(qreal position);
     QcNeedleItem* addNeedle(qreal position);
     QcLabelItem* addLabel(qreal position);
     QcGlassItem* addGlass(qreal position);
     QcAttitudeMeter* addAttitudeMeter(qreal position);
-
 
     void addItem(QcItem* item, qreal position);
     int removeItem(QcItem* item);
@@ -224,6 +225,45 @@ public slots:
 
 
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+
+class QCGAUGE_DECL QcDynamicArcItem : public QcScaleItem
+{
+    Q_OBJECT
+public:
+    explicit QcDynamicArcItem(QObject *parent = nullptr);
+    void draw(QPainter*);
+    void setColor(const QColor& color);
+
+    /**
+     * @brief setColor set multiple colors to transition colors at different percentages
+     * @param colors
+     */
+    void setColor(std::vector<std::pair<qreal, QColor>> colors);
+    /**
+     * @brief setWidth Set the relative width of the arc
+     * @param width
+     */
+    void setWidth(const qreal& width);
+    /**
+     * @brief setPercentage sets the value of the arc
+     * @param percent qreal between 0.0 and 1.0
+     */
+    void setPercentage(const qreal &percent);
+
+private:
+    QColor mColor;
+    std::vector<std::pair<qreal, QColor>> mColors;
+    bool usingSingleColor;
+    qreal mWidth;
+    qreal mPercentage;
+
+    QColor calculateColor(qreal percentage);
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
