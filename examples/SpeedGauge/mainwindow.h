@@ -31,6 +31,7 @@
 
 #include <QMainWindow>
 #include "../../source/qcgaugewidget.h"
+#include "./speedgauge.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +52,7 @@ private:
     Ui::MainWindow *ui;
 
     QcGaugeWidget * mSpeedGauge;
+    SpeedGauge *customSpeedGauge;
     QcNeedleItem *mSpeedNeedle;
     QcColorBand * mDynamicColorBand;
 };
